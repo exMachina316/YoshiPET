@@ -1,2 +1,2 @@
 # YoshiPET
-Personal Interactive pet powered by AI. Helpful for neurodivergents in learning social and emotional cues.
+Personal Interactive pet powered by AI designed to be your perfect companion on call.
