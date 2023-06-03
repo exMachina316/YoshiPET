@@ -67,7 +67,7 @@ const Chat = () => {
     setMode(event.target.value);
   };
 
-  const fetchCompletion = async () => {
+  const fetchCompletion = async (callback) => {
     // using axios
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -78,15 +78,12 @@ const Chat = () => {
       },
       {
         headers: {
-<<<<<<< Updated upstream
-          Authorization: `<insert api key here>`,
-=======
-          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
->>>>>>> Stashed changes
+          Authorization: `Bearer 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`,
         },
       }
     );
     setCompletion(response.data.choices[0].message.content);
+    callback();
   };
 
   const handleSpeak = () => {
@@ -102,7 +99,9 @@ const Chat = () => {
     ; // Delay of 10 milliseconds
   };
 
-
+const fetchDataAndSpeak = () => {
+  fetchCompletion(handleSpeak);
+}
 
   return (
     <div className="App">
@@ -126,13 +125,13 @@ const Chat = () => {
       <button
         className="button"
         onClick={() => {
-          fetchCompletion();
+          fetchDataAndSpeak();
           // setTimeout(handleSpeak, 2000);
         }}
       >
         🔍
       </button>
-      <button
+      {/* <button
         className="button"
         onClick={() => {
           // fetchCompletion();
@@ -140,7 +139,7 @@ const Chat = () => {
         }}
       >
         🔊
-      </button>
+      </button> */}
 
       <button className="button" onClick={SpeechRecognition.startListening}>
         🎙️
