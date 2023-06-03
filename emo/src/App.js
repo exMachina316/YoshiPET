@@ -60,7 +60,7 @@ const Chat = () => {
       },
       {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `<insert api key here>`,
         },
       }
     );
