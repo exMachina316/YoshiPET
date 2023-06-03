@@ -12,7 +12,7 @@ const char* ssid = "realme 7";
 const char* password = "12345678";
 
 IPAddress server(192,168,200,57); // ip of your ROS server
-IPAddress ip_address; 
+IPAddress ip_address;
 int status = WL_IDLE_STATUS;
 
 WiFiClient client;
@@ -25,7 +25,7 @@ class WiFiHardware {
   void init() {
     // do your initialization here. this probably includes TCP server/client setup
     client.connect(server, 11411);
-    //client.connect(http://emachina316-xps-13-9305:11311/);
+    Serial.println("Connected to server");
   }
 
   // read a byte from the serial port. -1 = failure
@@ -48,39 +48,27 @@ class WiFiHardware {
   }
 };
 
-
 Servo s;
-int i;
-std_msgs::Int16 int_msg;
-
+String i;
 
 void chatterCallback(const std_msgs::String& msg) {
-  i = atoi(msg.data);
-  s.write(i);
+  i = msg.data;
+  Serial.println(i);
 }
 
+ros::Subscriber<std_msgs::String> sub("message", &chatterCallback);
+std_msgs::String str_msg;
+ros::Publisher chatter("chatter", &str_msg);
 
-//ros::Subscriber<std_msgs::String> sub("message", &chatterCallback);
-ros::Publisher pub("/esp8266_WIFI/publish_test", &int_msg);
+char hello[15] = "ESP8266 alive!";
+
 ros::NodeHandle_<WiFiHardware> nh;
-
+WiFiHardware wifi;
 
 void setupWiFi()
 {
   WiFi.begin(ssid, password);
   Serial.print("\nConnecting to "); Serial.println(ssid);
-  /*
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.print("Ready! Use ");
-  Serial.print(WiFi.localIP());
-  Serial.println(" to access client");
-  
-  */
   uint8_t i = 0;
   while (WiFi.status() != WL_CONNECTED && i++ < 20) delay(500);
   if(i == 21){
@@ -90,21 +78,22 @@ void setupWiFi()
   Serial.print("Ready! Use ");
   Serial.print(WiFi.localIP());
   Serial.println(" to access client");
+  wifi.init();
 }
 
 void setup() {
   Serial.begin(9600);
   setupWiFi();
   delay(2000);
-  //s.attach(2);  // PWM pin
+  s.attach(2);  // PWM pin
   nh.initNode();
-  nh.advertise(pub);
-  //nh.subscribe(sub);
-  int_msg.data=1;
+  nh.subscribe(sub);
+  nh.advertise(chatter);
 }
 
-void loop(){
-  pub.publish(&int_msg);
+void loop() {
+  str_msg.data = hello;
+  chatter.publish( &str_msg );
   nh.spinOnce();
   delay(500);
 }
