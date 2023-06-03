@@ -5,12 +5,13 @@ import "./App.css";
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
-import Affirmation from "./components/Affirmation";
+// import Affirmation from "./components/Affirmation";
 // import AlterSound from "./components/Altersound";
-import logo from "./logo.png";
+// import logo from "./logo.png";
+// import EyeComponent from "./components/EyeComponent";
+import Eye from "./components/EyeComponent";
 
 // let role = "friend";
-
 
 // var quote = "you are friendly robot friend and i am having conversation with you i say" + instru + "and you will reply to me as?";
 
@@ -20,9 +21,16 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <h2>Hey Boss!</h2>
+      {/* <Dropdown /> */}
+        {/* <h2>Hey Boss!</h2> */}
+        {/* <EyeComponent /> */}
         {/* <h2>Prompt: {instru}</h2> */}
         {/* <h2>Role: {role}</h2> */}
+      </div>
+
+      <div id="eyes">
+        <Eye />
+        <Eye />
       </div>
       {/* <img src={logo} className="eyes" alt="logo" /> */}
       {/* <Affirmation /> */}
@@ -39,9 +47,15 @@ const Chat = () => {
   const [completion, setCompletion] = useState("");
   const { transcript, resetTranscript } = useSpeechRecognition();
   let [instru, setInstru] = useState("can you introduce yourself?");
-  var quote = "you are friendly robot friend name jump and i am having conversation with you i say" + transcript + "and you will reply to me as?";
+  let [mode, setMode] = useState("friendly robot");
+
+  var quote =
+    "you are "+ mode + "name Yoshipet im asking you" +
+    transcript +
+    "(reply in not more than 30 words)";
 
   
+
   //similar to useState, create a transcript and resetTranscript func
   // from the useSpeechRecognition() function
 
@@ -49,18 +63,26 @@ const Chat = () => {
     return null;
   }
 
+  const handleModeChange = (event) => {
+    setMode(event.target.value);
+  };
+
   const fetchCompletion = async () => {
     // using axios
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo-0301",
         messages: [{ role: "user", content: quote }],
         temperature: 0.7,
       },
       {
         headers: {
+<<<<<<< Updated upstream
           Authorization: `<insert api key here>`,
+=======
+          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+>>>>>>> Stashed changes
         },
       }
     );
@@ -68,7 +90,7 @@ const Chat = () => {
   };
 
   const handleSpeak = () => {
-    setTimeout(() => {
+    
       if ("speechSynthesis" in window) {
         const synthesis = window.speechSynthesis;
         const utterance = new SpeechSynthesisUtterance(completion);
@@ -77,33 +99,55 @@ const Chat = () => {
       } else {
         console.log("Text-to-speech not supported in this browser.");
       }
-    }, 1); // Delay of 10 milliseconds
+    ; // Delay of 10 milliseconds
   };
 
-  
-  // const run = () => {
-  //   setTimeout(() => {
-  //     fetchCompletion();
-  //   }, 10);
-  //   handleSpeak();
-  // }
-  
+
 
   return (
     <div className="App">
+        <label htmlFor="mode-select" className="text">Select Mode:</label>
+        <select id="mode-select" className="text" value={mode} onChange={handleModeChange}>
+        <option value="default">GPT-4</option>
+        <option value="health-advisor">Health Advisor</option>
+        <option value="travel-planner">Travel Planner</option>
+        <option value="weather-forecaster">Weather Forecaster</option>
+        <option value="language-translator">Language Translator</option>
+        <option value="content-Writer">Content Writer</option>
+        <option value="financial-advisor">Financial Advisor</option>
+        <option value="recipe-finder">Recipe Finder</option>
+        <option value="task-manager">Task Manager</option>
+        <option value="news-reader">News Reader</option>
+        <option value="personal-assistant">Personal Assistant</option>
+      </select>
+      <p>Selected Mode: {mode}</p>
+     
       <p className="text">{completion}</p>
-      <button className="button" onClick={fetchCompletion}>
-        Reply
+      <button
+        className="button"
+        onClick={() => {
+          fetchCompletion();
+          // setTimeout(handleSpeak, 2000);
+        }}
+      >
+        🔍
       </button>
-      <button className="button" onClick={handleSpeak}>
-        Speak
+      <button
+        className="button"
+        onClick={() => {
+          // fetchCompletion();
+          handleSpeak();
+        }}
+      >
+        🔊
       </button>
+
       <button className="button" onClick={SpeechRecognition.startListening}>
-        Listen!
+        🎙️
       </button>
-      <button className="button" onClick={SpeechRecognition.stopListening}>
+      {/* <button className="button" onClick={SpeechRecognition.stopListening}>
         Stop!
-      </button>
+      </button> */}
       {/* <button className="button" onClick={resetTranscript}>
         Reset
       </button> */}
@@ -112,6 +156,36 @@ const Chat = () => {
     </div>
   );
 };
+
+
+// function Dropdown() {
+//   const [mode, setMode] = useState('default');
+
+//   const handleModeChange = (event) => {
+//     setMode(event.target.value);
+//   };
+
+//   return (
+//     <div>
+//       {/* <label htmlFor="mode-select">Select Mode:</label> */}
+//       <select id="mode-select" value={mode} onChange={handleModeChange}>
+//         <option value="default">Default</option>
+//         <option value="health-advisor">Health Advisor</option>
+//         <option value="travel-planner">Travel Planner</option>
+//         <option value="weather-forecaster">Weather Forecaster</option>
+//         <option value="language-translator">Language Translator</option>
+//         <option value="financial-advisor">Financial Advisor</option>
+//         <option value="recipe-finder">Recipe Finder</option>
+//         <option value="task-manager">Task Manager</option>
+//         <option value="news-reader">News Reader</option>
+//         <option value="personal-assistant">Personal Assistant</option>
+//       </select>
+//       <p>Selected Mode: {mode}</p>
+//     </div>
+//   );
+// }
+
+
 
 // function AlterSound() {
 //   const { transcript, resetTranscript } = useSpeechRecognition();
