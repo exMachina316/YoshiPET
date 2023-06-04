@@ -1,0 +1,2 @@
+brainss
+-DCATKIN_DEVEL_PREFIX=/home/emachina316/Documents/yoshiPET/devel -DCMAKE_INSTALL_PREFIX=/home/emachina316/Documents/yoshiPET/install -G Unix Makefiles
