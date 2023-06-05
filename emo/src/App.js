@@ -78,7 +78,7 @@ const Chat = () => {
       },
       {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer `,
         },
       }
     );
